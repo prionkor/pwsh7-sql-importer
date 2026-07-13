@@ -1,0 +1,22 @@
+# Standard .gitignore file for PowerShell projects
+# Ignore compiled binaries and other build artifacts
+bin/
+obj/
+# Ignore user-specific files
+*.user
+*.suo
+# Ignore PowerShell module manifest files
+*.psd1
+# Ignore PowerShell script module files
+*.psm1
+# Ignore PowerShell script data files
+*.psd1
+# Ignore PowerShell script help files
+*.xml
+# Ignore PowerShell script log files
+*.log
+# Ignore PowerShell script temporary files
+*.tmp
+# Ignore .env files
+.env
+*.csv

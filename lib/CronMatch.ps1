@@ -1,16 +1,35 @@
+
 function CronMatch {
     param (
+        [Parameter(Mandatory)]
         [string]$CronExpression,
+
         [datetime]$TimeToCheck = (Get-Date)
     )
+
     try {
         $CronSchedule = [NCrontab.CrontabSchedule]::Parse($CronExpression.Trim())
-        $LookbackWindow = $TimeToCheck.AddSeconds(-1)
-        $NextOccurrence = $CronSchedule.GetNextOccurrence($LookbackWindow)
-        
-        return (($NextOccurrence.Hour -eq $TimeToCheck.Hour) -and ($NextOccurrence.Minute -eq $TimeToCheck.Minute))
-    } catch {
-        Write-Log "Task '$TaskName' has an invalid CronString '$CronExpression'. The task will be skipped." "INFO"
-        return $false 
+
+        # Normalize to the beginning of the current minute
+        $CurrentMinute = [datetime]::new(
+            $TimeToCheck.Year,
+            $TimeToCheck.Month,
+            $TimeToCheck.Day,
+            $TimeToCheck.Hour,
+            $TimeToCheck.Minute,
+            0,
+            $TimeToCheck.Kind
+        )
+
+        # Ask for the first occurrence immediately after the previous instant
+        $PreviousInstant = $CurrentMinute.AddTicks(-1)
+
+        $NextOccurrence = $CronSchedule.GetNextOccurrence($PreviousInstant)
+
+        return ($NextOccurrence -eq $CurrentMinute)
+    }
+    catch {
+        Write-Log "Invalid CronString '$CronExpression'. Task will be skipped." "ERROR"
+        return $false
     }
 }

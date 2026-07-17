@@ -1,2 +1,3 @@
 @echo off
-pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0miner.ps1" -Scheduled
+cd /d "%~dp0"
+pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "miner.ps1" -Scheduled

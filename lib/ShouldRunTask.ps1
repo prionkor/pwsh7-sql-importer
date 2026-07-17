@@ -1,3 +1,5 @@
+. (Join-Path -Path $PSScriptRoot -ChildPath "CronMatch.ps1")
+
 function ShouldRunTask {
     param (
         [pscustomobject]$Task,

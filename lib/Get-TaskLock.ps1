@@ -4,38 +4,34 @@ function Get-TaskLock {
         [string]$TaskName
     )
 
-    $LockFile = Join-Path -Path $global:Config.DataDir -ChildPath "$TaskName.lock"
+    $LockFile = Join-Path $global:Config.DataDir "$TaskName.lock"
 
     try {
-        # Atomically acquire the lock. If the file already exists,
-        # another worker owns the lock.
-        New-Item `
-            -Path $LockFile `
-            -ItemType File `
-            -ErrorAction Stop | Out-Null
+        $Stream = [System.IO.File]::Open(
+            $LockFile,
+            [System.IO.FileMode]::CreateNew,
+            [System.IO.FileAccess]::Write,
+            [System.IO.FileShare]::None
+        )
 
-        @{
-            PID     = $PID
-            Started = Get-Date
-            Task = $TaskName
-        } |
-        ConvertTo-Json |
-        Set-Content `
-            -Path $LockFile `
-            -Encoding utf8 `
-            -ErrorAction Stop
+        try {
+            $LockInfo = @{
+                PID     = $PID
+                Started = Get-Date
+                Task    = $TaskName
+            } | ConvertTo-Json
+
+            $Bytes = [System.Text.Encoding]::UTF8.GetBytes($LockInfo)
+            $Stream.Write($Bytes, 0, $Bytes.Length)
+        }
+        finally {
+            $Stream.Dispose()
+        }
 
         return $LockFile
     }
-    catch {
-        # If writing metadata failed, don't leave a stale lock behind.
-        if (Test-Path -Path $LockFile -PathType Leaf) {
-            Remove-Item `
-                -Path $LockFile `
-                -Force `
-                -ErrorAction SilentlyContinue
-        }
-
+    catch [System.IO.IOException] {
+        # Lock already exists
         return $null
     }
 }

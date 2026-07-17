@@ -1,3 +1,9 @@
+. (Join-Path -Path $PSScriptRoot -ChildPath "Get-TaskLock.ps1")
+
+. (Join-Path -Path $PSScriptRoot -ChildPath "ShouldRunTask.ps1")
+. (Join-Path -Path $PSScriptRoot -ChildPath "Export-TaskData.ps1")
+. (Join-Path -Path $PSScriptRoot -ChildPath "Send-Email.ps1")
+
 function Mine{
     $Tasks = Import-Csv -Path $global:Config.TaskFile
     $Now = Get-Date

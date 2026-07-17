@@ -6,13 +6,9 @@ param(
 # --- IMPORT MODULES EXTENSIONS ---
 # ==============================================================================
 
-. (Join-Path -Path $PSScriptRoot -ChildPath "lib/CronMatch.ps1")
 . (Join-Path -Path $PSScriptRoot -ChildPath "lib/Get-EnvOrThrow.ps1")
 . (Join-Path -Path $PSScriptRoot -ChildPath "lib/Import-DotEnv.ps1")
 . (Join-Path -Path $PSScriptRoot -ChildPath "lib/Write-Log.ps1")
-. (Join-Path -Path $PSScriptRoot -ChildPath "lib/ShouldRunTask.ps1")
-. (Join-Path -Path $PSScriptRoot -ChildPath "lib/Export-TaskData.ps1")
-. (Join-Path -Path $PSScriptRoot -ChildPath "lib/Send-Email.ps1")
 . (Join-Path -Path $PSScriptRoot -ChildPath "lib/Initialize-Config.ps1")
 . (Join-Path -Path $PSScriptRoot -ChildPath "lib/Mine.ps1")
 
